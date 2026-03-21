@@ -1,16 +1,38 @@
-import { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Header, NowPlaying, PlayButton, SocialLinks, Footer, Schedule, NotificationPanel } from '../components';
+import { audioPlayer } from '../services';
 import { COLORS } from '../constants';
+
+const STREAM_URL = 'https://streamingned.com:7190/stream';
 
 export default function HomeScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const handlePlayPress = () => {
-    setIsPlaying(!isPlaying);
+  useEffect(() => {
+    audioPlayer.initialize();
+    
+    return () => {
+      audioPlayer.stop();
+    };
+  }, []);
+
+  const handlePlayPress = async () => {
+    try {
+      if (isPlaying) {
+        await audioPlayer.stop();
+        setIsPlaying(false);
+      } else {
+        await audioPlayer.play(STREAM_URL);
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo reproducir la emisora');
+      setIsPlaying(false);
+    }
   };
 
   const handleNotificationPress = () => {
