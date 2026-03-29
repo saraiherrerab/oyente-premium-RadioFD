@@ -37,7 +37,7 @@ const scheduleData = [
 ];
 
 export const Schedule = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true); // Expandido por defecto
 
   return (
     <View style={styles.container}>
