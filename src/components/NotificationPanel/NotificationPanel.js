@@ -34,12 +34,20 @@ export const NotificationPanel = ({ visible, onClose }) => {
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.panel}>
+      <TouchableOpacity 
+        style={styles.overlay}
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <TouchableOpacity 
+          style={styles.panel}
+          activeOpacity={1}
+          onPress={(e) => e.stopPropagation()}
+        >
           <View style={styles.header}>
             <Text style={styles.title}>Notificaciones</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color={COLORS.text} />
+              <Ionicons name="close" size={24} color="#000000" />
             </TouchableOpacity>
           </View>
 
@@ -77,8 +85,8 @@ export const NotificationPanel = ({ visible, onClose }) => {
               <Text style={styles.emptyText}>No tienes notificaciones</Text>
             </View>
           )}
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -107,7 +115,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: COLORS.text,
+    color: '#000000',
   },
   closeButton: {
     padding: 4,
@@ -140,17 +148,17 @@ const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.text,
+    color: '#000000',
     marginBottom: 4,
   },
   notificationMessage: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: '#4B5563',
     marginBottom: 4,
   },
   notificationTime: {
     fontSize: 12,
-    color: COLORS.textLight,
+    color: '#6B7280',
   },
   unreadDot: {
     width: 8,
@@ -167,7 +175,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: COLORS.textLight,
+    color: '#6B7280',
     marginTop: 12,
   },
 });

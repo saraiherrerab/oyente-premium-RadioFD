@@ -6,3 +6,7 @@ export * from './SocialLinks';
 export * from './Footer';
 export * from './Schedule';
 export * from './NotificationPanel';
+export { default as ContactModal } from './ContactModal';
+export * from './AlbumArt';
+export * from './DynamicBackground';
+export * from './SoundWaves';

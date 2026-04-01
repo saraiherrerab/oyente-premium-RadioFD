@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Header, NowPlaying, PlayButton, SocialLinks, Footer, Schedule, NotificationPanel } from '../components';
+import { Header, NowPlaying, PlayButton, Footer, Schedule, NotificationPanel, DynamicBackground, SoundWaves } from '../components';
+import RadioList from '../components/RadioList';
+import LiveIndicator from '../components/LiveIndicator';
 import { audioPlayer } from '../services';
-import { COLORS } from '../constants';
-
-const STREAM_URL = 'https://streamingned.com:7190/stream';
+import { getCoverSource } from '../utils';
+import { COLORS, RADIO_CONFIG } from '../constants';
 
 export default function HomeScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedRadio, setSelectedRadio] = useState(RADIO_CONFIG.radios[0]);
+  const [isScheduleExpanded, setIsScheduleExpanded] = useState(false);
+  const [nowPlaying, setNowPlaying] = useState({
+    song: selectedRadio.name,
+    artist: 'Tu música, tu radio',
+    coverUrl: null,
+  });
 
   useEffect(() => {
     audioPlayer.initialize();
@@ -20,13 +27,29 @@ export default function HomeScreen() {
     };
   }, []);
 
+  const handleSelectRadio = async (radio) => {
+    // Si está reproduciendo, detener el audio actual
+    if (isPlaying) {
+      await audioPlayer.stop();
+      setIsPlaying(false);
+    }
+
+    // Cambiar a la nueva radio
+    setSelectedRadio(radio);
+    setNowPlaying({
+      song: radio.name,
+      artist: 'Tu música, tu radio',
+      coverUrl: null,
+    });
+  };
+
   const handlePlayPress = async () => {
     try {
       if (isPlaying) {
         await audioPlayer.stop();
         setIsPlaying(false);
       } else {
-        await audioPlayer.play(STREAM_URL);
+        await audioPlayer.play(selectedRadio.streamUrl);
         setIsPlaying(true);
       }
     } catch (error) {
@@ -43,14 +66,13 @@ export default function HomeScreen() {
     setShowNotifications(false);
   };
 
+  const coverSource = getCoverSource(nowPlaying.coverUrl);
+
   return (
-    <LinearGradient
-      colors={['#9333EA', '#3B82F6']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.gradient}
-    >
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      <DynamicBackground imageSource={coverSource}>
+        <SoundWaves isPlaying={isPlaying} />
+        
         <View style={styles.container}>
           <Header onNotificationPress={handleNotificationPress} />
           
@@ -58,43 +80,53 @@ export default function HomeScreen() {
             style={styles.scrollView}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
+            scrollEnabled={isScheduleExpanded}
           >
             <NowPlaying 
-              song="Blinding Lights" 
-              artist="The Weeknd" 
+              song={nowPlaying.song}
+              artist={nowPlaying.artist}
+              coverUrl={nowPlaying.coverUrl}
             />
             
             <View style={styles.playButtonContainer}>
               <PlayButton onPress={handlePlayPress} isPlaying={isPlaying} />
+              <LiveIndicator 
+                isLive={isPlaying}
+                viewerCount={RADIO_CONFIG.viewers.count}
+                showViewers={RADIO_CONFIG.viewers.enabled}
+              />
             </View>
             
-            <Schedule />
+            <Schedule onExpandChange={setIsScheduleExpanded} />
             
-            <SocialLinks />
+            <RadioList 
+              radios={RADIO_CONFIG.radios}
+              selectedRadioId={selectedRadio.id}
+              onSelectRadio={handleSelectRadio}
+              currentCoverSource={coverSource}
+            />
           </ScrollView>
           
           <Footer />
         </View>
-      </SafeAreaView>
+      </DynamicBackground>
 
       <NotificationPanel 
         visible={showNotifications}
         onClose={handleCloseNotifications}
       />
-    </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   safeArea: {
     flex: 1,
+    backgroundColor: '#111827',
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    zIndex: 1,
   },
   scrollView: {
     flex: 1,
@@ -105,5 +137,7 @@ const styles = StyleSheet.create({
   },
   playButtonContainer: {
     alignItems: 'center',
+    position: 'relative',
+    zIndex: 1,
   },
 });

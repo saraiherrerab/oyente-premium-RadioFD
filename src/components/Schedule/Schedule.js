@@ -36,14 +36,22 @@ const scheduleData = [
   },
 ];
 
-export const Schedule = () => {
-  const [isExpanded, setIsExpanded] = useState(true); // Expandido por defecto
+export const Schedule = ({ onExpandChange }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleToggle = () => {
+    const newState = !isExpanded;
+    setIsExpanded(newState);
+    if (onExpandChange) {
+      onExpandChange(newState);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity 
         style={styles.header}
-        onPress={() => setIsExpanded(!isExpanded)}
+        onPress={handleToggle}
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
@@ -108,7 +116,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: COLORS.text,
+    color: COLORS.background,
   },
   programList: {
     gap: 0,
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEF3C7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -136,12 +144,12 @@ const styles = StyleSheet.create({
   programName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.text,
+    color: COLORS.background,
     marginBottom: 4,
   },
   hostName: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.secondary,
   },
   timeText: {
     fontSize: 14,
