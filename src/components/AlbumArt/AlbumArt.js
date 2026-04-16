@@ -5,7 +5,7 @@ const { width } = Dimensions.get('window');
 
 const SIZES = {
   small: width * 0.25,
-  medium: Math.min(width * 0.45, 200),
+  medium: Math.min(width * 0.315, 140),
   large: width * 0.6,
 };
 

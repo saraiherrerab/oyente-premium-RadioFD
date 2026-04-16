@@ -1,21 +1,16 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Alert, ImageBackground } from 'react-native';
+import { StyleSheet, View, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-<<<<<<< Updated upstream
-import { Header, NowPlaying, PlayButton, Footer, Schedule, NotificationPanel, DynamicBackground, SoundWaves } from '../components';
+import { Ionicons } from '@expo/vector-icons';
+import { Header, NowPlaying, PlayButton, Footer, Schedule, NotificationPanel, SoundWaves, DynamicBackground } from '../components';
 import RadioList from '../components/RadioList';
 import LiveIndicator from '../components/LiveIndicator';
 import { audioPlayer } from '../services';
-import { getCoverSource } from '../utils';
-import { COLORS, RADIO_CONFIG } from '../constants';
-=======
-import { Header, NowPlaying, PlayButton, SocialLinks, Footer, Schedule, NotificationPanel } from '../components';
-import { audioPlayer } from '../services';
-import { COLORS } from '../constants';
 import { getDominantColorFromAsset } from '../utils';
+import { COLORS, RADIO_CONFIG } from '../constants';
 
-const STREAM_URL = 'https://streamingned.com:7190/stream';
-const CENTER_IMAGE = require('../../assets/icons/disco1.jpg');
+const DEFAULT_CENTER_IMAGE = require('../../assets/icons/disco1.jpg');
+const SHOW_HEADER_TOGGLE_BUTTON = false;
 
 function clampChannel(value) {
   return Math.max(0, Math.min(255, Math.round(value)));
@@ -49,64 +44,34 @@ function mixColor(hex, targetHex, weight) {
   });
 }
 
-function buildGradientFromColor(baseColor) {
-  return [
-    mixColor(baseColor, '#0f172a', 0.45),
-    baseColor,
-    mixColor(baseColor, '#ffffff', 0.28),
-  ];
-}
->>>>>>> Stashed changes
-
 export default function HomeScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-<<<<<<< Updated upstream
+  const [isLogoHeader, setIsLogoHeader] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState(RADIO_CONFIG.radios[0]);
-  const [isScheduleExpanded, setIsScheduleExpanded] = useState(false);
+  const [primaryColor, setPrimaryColor] = useState(COLORS.primary);
   const [nowPlaying, setNowPlaying] = useState({
-    song: selectedRadio.name,
+    song: RADIO_CONFIG.radios[0]?.name || RADIO_CONFIG.name,
     artist: 'Tu música, tu radio',
     coverUrl: null,
   });
-=======
-  const [primaryColor, setPrimaryColor] = useState(COLORS.primary);
-  const [dynamicColors, setDynamicColors] = useState(buildGradientFromColor(COLORS.primary));
->>>>>>> Stashed changes
+  const selectedCoverImage = selectedRadio?.coverImage || DEFAULT_CENTER_IMAGE;
 
   useEffect(() => {
     audioPlayer.initialize();
-    
+
     return () => {
       audioPlayer.stop();
     };
   }, []);
 
-<<<<<<< Updated upstream
-  const handleSelectRadio = async (radio) => {
-    // Si está reproduciendo, detener el audio actual
-    if (isPlaying) {
-      await audioPlayer.stop();
-      setIsPlaying(false);
-    }
-
-    // Cambiar a la nueva radio
-    setSelectedRadio(radio);
-    setNowPlaying({
-      song: radio.name,
-      artist: 'Tu música, tu radio',
-      coverUrl: null,
-    });
-  };
-=======
   useEffect(() => {
     let isMounted = true;
 
     const loadImageColors = async () => {
-      const dominantColor = await getDominantColorFromAsset(CENTER_IMAGE);
+      const dominantColor = await getDominantColorFromAsset(selectedCoverImage);
       if (isMounted && dominantColor) {
         setPrimaryColor(dominantColor);
-        setDynamicColors(buildGradientFromColor(dominantColor));
       }
     };
 
@@ -115,8 +80,21 @@ export default function HomeScreen() {
     return () => {
       isMounted = false;
     };
-  }, []);
->>>>>>> Stashed changes
+  }, [selectedCoverImage]);
+
+  const handleSelectRadio = async (radio) => {
+    if (isPlaying) {
+      await audioPlayer.stop();
+      setIsPlaying(false);
+    }
+
+    setSelectedRadio(radio);
+    setNowPlaying({
+      song: radio.name,
+      artist: 'Tu música, tu radio',
+      coverUrl: null,
+    });
+  };
 
   const handlePlayPress = async () => {
     try {
@@ -141,122 +119,151 @@ export default function HomeScreen() {
     setShowNotifications(false);
   };
 
-  const coverSource = getCoverSource(nowPlaying.coverUrl);
+  const handleToggleHeaderMode = () => {
+    setIsLogoHeader((currentValue) => !currentValue);
+  };
 
   return (
-<<<<<<< Updated upstream
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <DynamicBackground imageSource={coverSource}>
-        <SoundWaves isPlaying={isPlaying} />
-        
-=======
-    <View style={styles.gradient}>
-      <ImageBackground
-        source={CENTER_IMAGE}
-        blurRadius={28}
-        style={styles.backgroundImage}
-        imageStyle={styles.backgroundImageInner}
-      >
-        <View style={[styles.backgroundOverlay, { backgroundColor: mixColor(primaryColor, '#000000', 0.52) }]} />
-      </ImageBackground>
-
+    <DynamicBackground
+      imageSource={selectedCoverImage}
+      blurRadius={28}
+      overlayColor={'rgba(10, 16, 28, 0.14)'}
+      imageStyle={styles.backgroundImageInner}
+    >
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
->>>>>>> Stashed changes
+        <SoundWaves isPlaying={isPlaying} />
+
         <View style={styles.container}>
-          <Header onNotificationPress={handleNotificationPress} colors={{ primary: primaryColor }} />
-          
-          <ScrollView 
+          <Header
+            onNotificationPress={handleNotificationPress}
+            colors={{ primary: primaryColor }}
+            mode={isLogoHeader ? 'client2' : 'client1'}
+          />
+
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
-            scrollEnabled={isScheduleExpanded}
           >
-            <NowPlaying 
-<<<<<<< Updated upstream
+            <NowPlaying
+              imageSource={selectedCoverImage}
               song={nowPlaying.song}
               artist={nowPlaying.artist}
-              coverUrl={nowPlaying.coverUrl}
-=======
-              imageSource={CENTER_IMAGE}
-              accentColors={dynamicColors}
-              song="Blinding Lights" 
-              artist="The Weeknd" 
->>>>>>> Stashed changes
             />
-            
-            <View style={styles.playButtonContainer}>
-              <PlayButton onPress={handlePlayPress} isPlaying={isPlaying} />
-              <LiveIndicator 
-                isLive={isPlaying}
-                viewerCount={RADIO_CONFIG.viewers.count}
-                showViewers={RADIO_CONFIG.viewers.enabled}
-              />
+
+            <View style={styles.playControlsRow}>
+              <View style={[styles.sideBadgeSlot, styles.leftBadgeSlot]}>
+                <LiveIndicator
+                  isLive={isPlaying}
+                  viewerCount={RADIO_CONFIG.viewers.count}
+                  showViewers={RADIO_CONFIG.viewers.enabled}
+                  variant="viewers"
+                />
+              </View>
+
+              <View style={styles.centerControls}>
+                <PlayButton onPress={handlePlayPress} isPlaying={isPlaying} />
+                {SHOW_HEADER_TOGGLE_BUTTON && (
+                  <TouchableOpacity
+                    style={styles.headerToggleButton}
+                    onPress={handleToggleHeaderMode}
+                    activeOpacity={0.85}
+                  >
+                    <Ionicons
+                      name={isLogoHeader ? 'list-outline' : 'radio-outline'}
+                      size={18}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              <View style={[styles.sideBadgeSlot, styles.rightBadgeSlot]}>
+                <LiveIndicator
+                  isLive={isPlaying}
+                  viewerCount={RADIO_CONFIG.viewers.count}
+                  showViewers={RADIO_CONFIG.viewers.enabled}
+                  variant="live"
+                />
+              </View>
             </View>
-            
-            <Schedule onExpandChange={setIsScheduleExpanded} />
-            
-            <RadioList 
+
+            <Schedule />
+
+            <RadioList
               radios={RADIO_CONFIG.radios}
               selectedRadioId={selectedRadio.id}
               onSelectRadio={handleSelectRadio}
-              currentCoverSource={coverSource}
+              currentCoverSource={selectedCoverImage}
             />
           </ScrollView>
-          
+
           <Footer colors={{ primary: primaryColor }} />
         </View>
-      </DynamicBackground>
 
-      <NotificationPanel 
-        visible={showNotifications}
-        onClose={handleCloseNotifications}
-      />
-<<<<<<< Updated upstream
-    </SafeAreaView>
-=======
-    </View>
->>>>>>> Stashed changes
+        <NotificationPanel
+          visible={showNotifications}
+          onClose={handleCloseNotifications}
+        />
+      </SafeAreaView>
+    </DynamicBackground>
   );
 }
 
 const styles = StyleSheet.create({
-<<<<<<< Updated upstream
-=======
-  gradient: {
-    flex: 1,
-  },
-  backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-  },
   backgroundImageInner: {
     transform: [{ scale: 1.12 }],
   },
-  backgroundOverlay: {
-    ...StyleSheet.absoluteFillObject,
-  },
->>>>>>> Stashed changes
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
-<<<<<<< Updated upstream
-    zIndex: 1,
-=======
     backgroundColor: 'transparent',
->>>>>>> Stashed changes
+    zIndex: 1,
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    paddingVertical: 20,
-    gap: 24,
+    paddingVertical: 14,
+    paddingBottom: 28,
+    gap: 16,
+    flexGrow: 1,
   },
-  playButtonContainer: {
+  playControlsRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    position: 'relative',
-    zIndex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  sideBadgeSlot: {
+    width: 96,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  leftBadgeSlot: {
+    alignItems: 'flex-end',
+  },
+  rightBadgeSlot: {
+    alignItems: 'flex-start',
+  },
+  centerControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 70,
+  },
+  headerToggleButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginLeft: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.28)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

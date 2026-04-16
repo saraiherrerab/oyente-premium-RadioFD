@@ -1,17 +1,22 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 
-export default function LiveIndicator({ isLive, viewerCount, showViewers }) {
+export default function LiveIndicator({ isLive, viewerCount, showViewers, variant = 'both' }) {
   if (!isLive) {
     return null;
   }
 
+  const shouldShowLiveBadge = variant === 'both' || variant === 'live';
+  const shouldShowViewersBadge = showViewers && viewerCount !== null && (variant === 'both' || variant === 'viewers');
+
   return (
     <View style={styles.container}>
-      <View style={styles.liveBadge}>
-        <Text style={styles.liveText}>EN VIVO</Text>
-      </View>
-      
-      {showViewers && viewerCount !== null && (
+      {shouldShowLiveBadge && (
+        <View style={styles.liveBadge}>
+          <Text style={styles.liveText}>EN VIVO</Text>
+        </View>
+      )}
+
+      {shouldShowViewersBadge && (
         <View style={styles.viewersBadge}>
           <Image 
             source={require('../../../assets/icons/avatar.png')} 
@@ -26,12 +31,8 @@ export default function LiveIndicator({ isLive, viewerCount, showViewers }) {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    alignItems: 'flex-end',
-    gap: 8,
-    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   liveBadge: {
     backgroundColor: '#DC2626',

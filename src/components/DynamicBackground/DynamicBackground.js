@@ -1,7 +1,13 @@
-import { View, ImageBackground, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export const DynamicBackground = ({ imageSource, children }) => {
+export const DynamicBackground = ({
+  imageSource,
+  children,
+  blurRadius = 15,
+  overlayColor = 'rgba(0, 0, 0, 0.12)',
+  imageStyle,
+}) => {
   if (!imageSource) {
     return (
       <LinearGradient
@@ -15,14 +21,13 @@ export const DynamicBackground = ({ imageSource, children }) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
+      <Image
         source={imageSource}
-        style={styles.background}
-        blurRadius={15}
+        style={[styles.background, imageStyle]}
+        blurRadius={blurRadius}
         resizeMode="cover"
-      >
-        <View style={styles.overlay} />
-      </ImageBackground>
+      />
+      <View style={[styles.overlay, { backgroundColor: overlayColor }]} />
       <View style={styles.content}>
         {children}
       </View>
@@ -35,12 +40,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   background: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.92,
   },
   overlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   content: {

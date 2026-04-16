@@ -89,18 +89,12 @@ export const Schedule = ({ onExpandChange }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: 16,
     padding: 20,
     marginHorizontal: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   header: {
     flexDirection: 'row',
@@ -116,7 +110,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: COLORS.background,
+    color: COLORS.white,
   },
   programList: {
     gap: 0,
@@ -127,13 +121,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
   },
   iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FEF3C7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -144,16 +137,16 @@ const styles = StyleSheet.create({
   programName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.background,
+    color: COLORS.white,
     marginBottom: 4,
   },
   hostName: {
     fontSize: 14,
-    color: COLORS.secondary,
+    color: COLORS.textSecondary,
   },
   timeText: {
     fontSize: 14,
     fontWeight: '500',
-    color: COLORS.textLight,
+    color: COLORS.textSecondary,
   },
 });

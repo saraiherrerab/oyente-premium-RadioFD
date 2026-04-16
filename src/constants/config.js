@@ -21,6 +21,7 @@ export const RADIO_CONFIG = {
       streamUrl: 'https://streamingned.com:7190/stream',
       metadataUrl: null,
       logo: require('../../assets/icons/radiologo.png'),
+      coverImage: require('../../assets/icons/disco1.jpg'),
     },
     {
       id: 2,
@@ -28,6 +29,7 @@ export const RADIO_CONFIG = {
       streamUrl: 'https://example.com/radio2/stream',
       metadataUrl: null,
       logo: require('../../assets/icons/radiologo.png'),
+      coverImage: require('../../assets/icons/disco2.jpg'),
     },
     {
       id: 3,
@@ -35,6 +37,7 @@ export const RADIO_CONFIG = {
       streamUrl: 'https://example.com/radio3/stream',
       metadataUrl: null,
       logo: require('../../assets/icons/radiologo.png'),
+      coverImage: require('../../assets/icons/disco3.jpg'),
     },
   ],
 };

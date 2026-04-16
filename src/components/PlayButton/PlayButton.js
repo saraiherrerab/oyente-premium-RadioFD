@@ -5,7 +5,8 @@ import { COLORS } from '../../constants';
 const { height } = Dimensions.get('window');
 
 export default function PlayButton({ onPress, isPlaying = false }) {
-  const buttonSize = Math.min(height * 0.09, 70);
+  const buttonSize = Math.min(height * 0.05733, 44);
+  const iconSize = 18;
   
   return (
     <TouchableOpacity 
@@ -13,9 +14,9 @@ export default function PlayButton({ onPress, isPlaying = false }) {
       onPress={onPress}
     >
       {isPlaying ? (
-        <Ionicons name="stop" size={28} color={COLORS.white} />
+        <Ionicons name="stop" size={iconSize} color={COLORS.white} />
       ) : (
-        <Ionicons name="play" size={28} color={COLORS.white} style={styles.playIcon} />
+        <Ionicons name="play" size={iconSize} color={COLORS.white} style={styles.playIcon} />
       )}
     </TouchableOpacity>
   );
@@ -33,6 +34,6 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   playIcon: {
-    marginLeft: 3,
+    marginLeft: 2,
   },
 });

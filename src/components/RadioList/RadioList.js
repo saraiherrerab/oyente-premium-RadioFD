@@ -11,7 +11,11 @@ export default function RadioList({ radios, selectedRadioId, onSelectRadio, curr
       >
         {radios.map((radio) => {
           const isSelected = selectedRadioId === radio.id;
-          const imageSource = isSelected && currentCoverSource ? currentCoverSource : radio.logo;
+          const defaultPreviewSource = radio.coverImage || radio.logo;
+          const imageSource = isSelected && currentCoverSource ? currentCoverSource : defaultPreviewSource;
+          const imageStyle = radio.coverImage || (isSelected && currentCoverSource)
+            ? styles.coverImage
+            : styles.logo;
           
           return (
             <TouchableOpacity
@@ -25,7 +29,7 @@ export default function RadioList({ radios, selectedRadioId, onSelectRadio, curr
             >
               <Image 
                 source={imageSource} 
-                style={isSelected && currentCoverSource ? styles.coverImage : styles.logo}
+                style={imageStyle}
               />
               <Text 
                 style={[
