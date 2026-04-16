@@ -1,10 +1,24 @@
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants';
 
+<<<<<<< Updated upstream
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   
+=======
+export default function Footer({ colors }) {
+  const bgColor = colors?.primary || null;
+
+  if (bgColor) {
+    return (
+      <View style={[styles.container, { backgroundColor: bgColor }]}> 
+        <Text style={styles.text}>Información de canciones cortesía de iTunes</Text>
+      </View>
+    );
+  }
+
+>>>>>>> Stashed changes
   return (
     <LinearGradient
       colors={['#D4AF37', '#8B7355', '#5A5A5A']}
